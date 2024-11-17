@@ -33,13 +33,16 @@ export default function Contact() {
     e.preventDefault();
     setButtonText("Sending...");
     try {
-      const response = await fetch("http://localhost:4000/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formDetails),
-      });
+      const response = await fetch(
+        "https://my-portfolio-server-jet.vercel.app/api/contact",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formDetails),
+        }
+      );
 
       setButtonText("Send");
 
