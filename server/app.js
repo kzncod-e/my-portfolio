@@ -1,16 +1,13 @@
 import express from "express";
-const router = express.Router();
 import cors from "cors";
-import "dotenv/config";
 import nodemailer from "nodemailer";
-const port = process.env.PORT || 4000;
-// server used to send send emails
+import "dotenv/config";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/", router);
-app.listen(port, () => console.log(`Server Running on port ${port}`));
 
+// Nodemailer transport
 const contactEmail = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -21,32 +18,38 @@ const contactEmail = nodemailer.createTransport({
 
 contactEmail.verify((error) => {
   if (error) {
-    console.log(error);
+    console.error("Error verifying email:", error);
   } else {
     console.log("Ready to Send");
   }
 });
 
-router.post("/contact", async (req, res) => {
-  const name = req.body.firstName + req.body.lastName;
-  console.log(req.body);
+// Contact route
+app.post("/api/contact", async (req, res) => {
+  const { firstName, lastName, email, phone, message } = req.body;
+  const name = `${firstName} ${lastName}`;
 
-  const { email, phone, message } = req.body;
   const mail = {
     from: name,
     replyTo: email,
     to: "mohamadraihan660@gmail.com",
     subject: "Contact Form Submission - Portfolio",
-    html: `<p>Name: ${name}</p>
-           <p>Email: ${email}</p>
-           <p>Phone: ${phone}</p>
-           <p>Message: ${message}</p>`,
+    html: `
+      <p>Name: ${name}</p>
+      <p>Email: ${email}</p>
+      <p>Phone: ${phone}</p>
+      <p>Message: ${message}</p>
+    `,
   };
-  contactEmail.sendMail(mail, (error) => {
-    if (error) {
-      res.json(error);
-    } else {
-      res.json({ code: 200, status: "Message Sent" });
-    }
-  });
+
+  try {
+    await contactEmail.sendMail(mail);
+    res.json({ code: 200, status: "Message Sent" });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).json({ code: 500, error: "Failed to send message" });
+  }
 });
+
+// Export app for serverless function
+export default app;
