@@ -14,14 +14,9 @@ export default function Contact() {
     message: "",
   };
 
-  interface Status {
-    success: boolean;
-    message: string;
-  }
-
   const [formDetails, setFormDetails] = useState(initialDetails);
   const [buttonText, setButtonText] = useState("Send");
-  const [status, setStatus] = useState<Status>();
+  // const [status, setStatus] = useState<Status>();
 
   const onFormUpdate = (category: string, value: string) => {
     setFormDetails({
@@ -38,7 +33,7 @@ export default function Contact() {
     e.preventDefault();
     setButtonText("Sending...");
     try {
-      const response = await fetch("http://localhost:4000/contact", {
+      const response = await fetch("http://localhost:4000/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,10 +57,6 @@ export default function Contact() {
         });
         setFormDetails(initialDetails); // Reset form
       } else {
-        setStatus({
-          success: false,
-          message: "Something went wrong, please try again.",
-        });
         toast.error("❌ Failed to send the message.", {
           position: "top-right",
           autoClose: 5000,
