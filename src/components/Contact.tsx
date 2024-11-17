@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Row, Container, Col } from "react-bootstrap";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 import contactImg from "../assets/img/contact-img.svg";
+
 export default function Contact() {
   const initialDetails = {
     firstName: "",
@@ -9,26 +13,31 @@ export default function Contact() {
     phone: "",
     message: "",
   };
+
   interface Status {
     success: boolean;
     message: string;
   }
+
   const [formDetails, setFormDetails] = useState(initialDetails);
   const [buttonText, setButtonText] = useState("Send");
   const [status, setStatus] = useState<Status>();
+
   const onFormUpdate = (category: string, value: string) => {
     setFormDetails({
       ...formDetails,
       [category]: value,
     });
   };
+
   useEffect(() => {
     console.log(formDetails);
   }, [formDetails]);
+
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setButtonText("Sending...");
     try {
-      e.preventDefault();
-      setButtonText("Sending..");
       const response = await fetch("http://localhost:4000/contact", {
         method: "POST",
         headers: {
@@ -36,21 +45,53 @@ export default function Contact() {
         },
         body: JSON.stringify(formDetails),
       });
+
       setButtonText("Send");
+
       const result = await response.json();
       if (result.code === 200) {
-        setStatus({ success: true, message: "Message sent successfully" });
+        toast.success("🦄 Message sent successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setFormDetails(initialDetails); // Reset form
       } else {
         setStatus({
           success: false,
-          message: "Something Went Wrong,please try again",
+          message: "Something went wrong, please try again.",
         });
-        // setFormDetails(initialDetails)
+        toast.error("❌ Failed to send the message.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     } catch (error) {
-      console.log(error.error);
+      console.error("Error:", error);
+      toast.error("❌ An unexpected error occurred.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
+
   return (
     <section className="contact" id="connect">
       <Container>
@@ -82,7 +123,7 @@ export default function Contact() {
                   <input
                     type="email"
                     value={formDetails.email}
-                    placeholder="email"
+                    placeholder="Email"
                     onChange={(e) => onFormUpdate("email", e.target.value)}
                   />
                 </Col>
@@ -90,15 +131,15 @@ export default function Contact() {
                   <input
                     type="text"
                     value={formDetails.phone}
-                    placeholder="phone"
+                    placeholder="Phone"
                     onChange={(e) => onFormUpdate("phone", e.target.value)}
                   />
                 </Col>
                 <Col>
                   <textarea
-                    name=""
                     rows={6}
                     value={formDetails.message}
+                    placeholder="Message"
                     onChange={(e) =>
                       onFormUpdate("message", e.target.value)
                     }></textarea>
@@ -106,21 +147,13 @@ export default function Contact() {
                     <span>{buttonText}</span>
                   </button>
                 </Col>
-                {status?.message && (
-                  <Col>
-                    <p
-                      className={
-                        status?.success == false ? "danger" : "success"
-                      }>
-                      {status.message}
-                    </p>
-                  </Col>
-                )}
               </Row>
             </form>
           </Col>
         </Row>
       </Container>
+      {/* ToastContainer should be rendered at the top level */}
+      <ToastContainer />
     </section>
   );
 }

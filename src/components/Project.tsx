@@ -10,18 +10,23 @@ export default function Projects() {
   const projects = [
     {
       title: "eco-traveler",
-      description: "lorem",
+      description:
+        "Discover your dream destinations! Our AI-powered site offers live, personalized recommendations, interactive maps, quizzes, and custom itineraries—all designed to make trip planning exciting and tailored to you",
       imgUrl: projimg1,
+      link: "https://my-eccomerce2-99fo1qlm5-kzncods-projects.vercel.app/",
     },
     {
       title: "Chat-hub",
-      description: "lorem",
+      description:
+        "a real chat aplication that allow user send message like image or text base on topic their interest",
       imgUrl: projimg2,
+      link: "https://github.com/Chat-H-b/chat-io",
     },
     {
       title: "my-eccomerve",
-      description: "lorem",
+      description: `This sleek eCommerce site, built with Next.js and styled with Tailwind CSS, features a modern design, prominent product displays, and intuitive navigation links for Home, Products, Login, Register, and Wishlists. Users can easily "Read More" or "Add to Cart" for a seamless shopping experience.`,
       imgUrl: projimg3,
+      link: "https://my-eccomerce2-99fo1qlm5-kzncods-projects.vercel.app/",
     },
   ];
 

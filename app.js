@@ -3,7 +3,7 @@ const router = express.Router();
 import cors from "cors";
 import "dotenv/config";
 import nodemailer from "nodemailer";
-const port = 4000;
+const port = process.env.PORT || 4000;
 // server used to send send emails
 const app = express();
 app.use(cors());
